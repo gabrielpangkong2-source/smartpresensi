@@ -1,0 +1,41 @@
+flowchart TD
+    A([Mulai]) --> B[Admin login ke website]
+    B --> C[Admin kelola kelas dan user]
+    C --> D[Admin pilih 1 kelas sebagai presensi aktif]
+    D --> E[ESP8266 standby menunggu scan]
+    E --> F[User tempel kartu RFID]
+    F --> G[ESP8266 baca UID]
+    G --> H[Kirim UID ke API /api/absen]
+
+    H --> I{UID kosong?}
+    I -- Ya --> I1[Return Scan gagal]
+    I -- Tidak --> J{UID terdaftar?}
+
+    J -- Tidak --> J1[Simpan ke invalid_cards]
+    J1 --> J2[Return Kartu invalid]
+
+    J -- Ya --> K{Ada kelas aktif?}
+    K -- Tidak --> K1[Return Kelas belum aktif]
+
+    K -- Ya --> L{Mata kuliah user sesuai kelas aktif?}
+    L -- Tidak --> L1[Return MK tidak sesuai]
+
+    L -- Ya --> M{Sudah absen hari ini di kelas aktif?}
+    M -- Ya --> M1[Return Sudah presensi]
+
+    M -- Tidak --> N[Bandingkan waktu scan dengan jam masuk kelas]
+    N --> O{Terlambat?}
+    O -- Tidak --> O1[Simpan absensi status hadir]
+    O -- Ya --> O2[Simpan absensi status telat]
+
+    O1 --> P[Return Presensi berhasil]
+    O2 --> Q[Return Anda terlambat]
+
+    I1 --> R([Selesai])
+    J2 --> R
+    K1 --> R
+    L1 --> R
+    M1 --> R
+    P --> R
+    Q --> R
+

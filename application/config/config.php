@@ -23,7 +23,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://localhost/CodeIgniter-3.1.13/';
+$scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+$host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
+$script_name = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '/absensi/index.php';
+$base_path = rtrim(str_replace(basename($script_name), '', $script_name), '/');
+
+$config['base_url'] = $scheme . '://' . $host . ($base_path ? $base_path . '/' : '/');
 
 /*
 |--------------------------------------------------------------------------
